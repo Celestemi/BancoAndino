@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Banco Andino"
+        android:theme="@style/Theme.BancoAndino">
+
+        <!-- LoginActivity es la pantalla de inicio de la app -->
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- PanelActivity se abre solo desde el Login, no es lanzadora -->
+        <activity
+            android:name=".activities.PanelActivity"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

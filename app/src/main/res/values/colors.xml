@@ -1,0 +1,10 @@
+<resources>
+    <color name="andino_azul">#0D3B66</color>
+    <color name="andino_azul_claro">#3F729B</color>
+    <color name="andino_dorado">#F4A300</color>
+    <color name="andino_fondo">#F5F7FA</color>
+    <color name="andino_texto">#1B1B1B</color>
+    <color name="andino_verde">#2E7D32</color>
+    <color name="andino_rojo">#C62828</color>
+    <color name="white">#FFFFFF</color>
+</resources>

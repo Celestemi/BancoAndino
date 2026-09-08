@@ -11,13 +11,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -61,60 +60,45 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BancoAndinoApp() {
 
-    // Estado de la pantalla actual
     var pantallaActual by remember {
         mutableStateOf("splash")
     }
 
-    // Usuario que inició sesión
     var nombreUsuario by remember {
         mutableStateOf("")
     }
 
-    when (pantallaActual) {
-
-        // ----------------------------------------------------
-        // SPLASH
-        // ----------------------------------------------------
-        "splash" -> {
-            SplashScreen(
-                onSplashFinished = {
-                    pantallaActual = "login"
-                }
-            )
-        }
-
-        // ----------------------------------------------------
-        // LOGIN
-        // ----------------------------------------------------
-        "login" -> {
-            LoginScreen(
-                onLoginExitoso = { usuario ->
-                    nombreUsuario = usuario
-                    pantallaActual = "inicio"
-                }
-            )
-        }
-
-        // ----------------------------------------------------
-        // APLICACIÓN PRINCIPAL
-        // ----------------------------------------------------
-        "inicio" -> {
-            BancoPrincipalScreen(
-                nombre = nombreUsuario,
-                onCerrarSesion = {
-                    nombreUsuario = ""
-                    pantallaActual = "login"
-                }
-            )
-        }
+    if (pantallaActual == "splash") {
+        SplashScreen(
+            onSplashFinished = {
+                pantallaActual = "login"
+            }
+        )
+    }
+    else if (pantallaActual == "login") {
+        LoginScreen(
+            onLoginExitoso = { usuario ->
+                nombreUsuario = usuario
+                pantallaActual = "inicio"
+            }
+        )
+    }
+    else if (pantallaActual == "inicio") {
+        BancoPrincipalScreen(
+            nombre = nombreUsuario,
+            onCerrarSesion = {
+                nombreUsuario = ""
+                pantallaActual = "login"
+            }
+        )
     }
 }
 
+fun remember(function: Any) {}
+
 
 // ============================================================
-// 1. SPLASH SCREEN
-// La rúbrica exige LaunchedEffect + delay + transición automática
+// SPLASH SCREEN
 // ============================================================
 
 @Composable
@@ -122,7 +106,6 @@ fun SplashScreen(
     onSplashFinished: () -> Unit
 ) {
 
-    // Transición automática después de unos segundos
     LaunchedEffect(Unit) {
         delay(2000)
         onSplashFinished()
@@ -136,7 +119,6 @@ fun SplashScreen(
         verticalArrangement = Arrangement.Center
     ) {
 
-        // Logo
         Box(
             modifier = Modifier
                 .size(110.dp)
@@ -174,9 +156,7 @@ fun SplashScreen(
 
 
 // ============================================================
-// 2. LOGIN
-// OutlinedTextField + remember + mutableStateOf
-// PasswordVisualTransformation
+// LOGIN
 // ============================================================
 
 @Composable
@@ -184,11 +164,9 @@ fun LoginScreen(
     onLoginExitoso: (String) -> Unit
 ) {
 
-    // Credenciales solicitadas en la práctica
     val usuarioValido = "cliente1"
     val claveValida = "banco2026"
 
-    // Estados del formulario
     var usuario by remember {
         mutableStateOf("")
     }
@@ -201,7 +179,6 @@ fun LoginScreen(
         mutableStateOf("")
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -210,7 +187,6 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
 
-        // Icono del banco
         Box(
             modifier = Modifier
                 .size(85.dp)
@@ -244,11 +220,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(28.dp))
 
-
-        // ----------------------------------------------------
         // USUARIO
-        // ----------------------------------------------------
-
         OutlinedTextField(
             value = usuario,
             onValueChange = {
@@ -270,11 +242,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(14.dp))
 
-
-        // ----------------------------------------------------
-        // CLAVE
-        // ----------------------------------------------------
-
+        // CONTRASEÑA
         OutlinedTextField(
             value = clave,
             onValueChange = {
@@ -291,42 +259,29 @@ fun LoginScreen(
                 )
             },
             singleLine = true,
-
-            // Oculta la contraseña
             visualTransformation = PasswordVisualTransformation(),
-
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
-        // ----------------------------------------------------
-        // BOTÓN INGRESAR
-        // ----------------------------------------------------
-
+        // BOTÓN
         Button(
             onClick = {
 
-                // Validación de campos vacíos
                 if (usuario.isEmpty() || clave.isEmpty()) {
 
                     mensajeError = "Completa usuario y clave"
 
-                }
-                // Validación de credenciales
-                else if (
+                } else if (
                     usuario == usuarioValido &&
                     clave == claveValida
                 ) {
 
                     mensajeError = ""
-
                     onLoginExitoso(usuario)
 
-                }
-                // Credenciales incorrectas
-                else {
+                } else {
 
                     mensajeError = "Credenciales incorrectas"
                 }
@@ -340,11 +295,7 @@ fun LoginScreen(
             )
         }
 
-
-        // ----------------------------------------------------
-        // MENSAJE DE ERROR
-        // ----------------------------------------------------
-
+        // ERROR
         if (mensajeError.isNotEmpty()) {
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -361,9 +312,7 @@ fun LoginScreen(
 
 
 // ============================================================
-// 3, 4 y 5. APLICACIÓN PRINCIPAL
-//
-// Scaffold + NavigationBar + mutableStateOf
+// APLICACIÓN PRINCIPAL
 // ============================================================
 
 @Composable
@@ -372,112 +321,79 @@ fun BancoPrincipalScreen(
     onCerrarSesion: () -> Unit
 ) {
 
-    // Estado de la sección seleccionada
     var seccionSeleccionada by remember {
         mutableStateOf(0)
     }
 
-
     Scaffold(
-
-        // ====================================================
-        // BARRA INFERIOR
-        // ====================================================
 
         bottomBar = {
 
             NavigationBar {
 
-                // -------------------------------
                 // INICIO
-                // -------------------------------
-
                 NavigationBarItem(
                     selected = seccionSeleccionada == 0,
-
                     onClick = {
                         seccionSeleccionada = 0
                     },
-
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Home,
                             contentDescription = "Inicio"
                         )
                     },
-
                     label = {
                         Text("Inicio")
                     }
                 )
 
-
-                // -------------------------------
                 // CUENTAS
-                // -------------------------------
-
                 NavigationBarItem(
                     selected = seccionSeleccionada == 1,
-
                     onClick = {
                         seccionSeleccionada = 1
                     },
-
                     icon = {
                         Icon(
                             imageVector = Icons.Default.AccountBalance,
                             contentDescription = "Cuentas"
                         )
                     },
-
                     label = {
                         Text("Cuentas")
                     }
                 )
 
-
-                // -------------------------------
                 // CRÉDITOS
-                // -------------------------------
-
                 NavigationBarItem(
                     selected = seccionSeleccionada == 2,
-
                     onClick = {
                         seccionSeleccionada = 2
                     },
-
                     icon = {
                         Icon(
                             imageVector = Icons.Default.CreditCard,
                             contentDescription = "Créditos"
                         )
                     },
-
                     label = {
                         Text("Créditos")
                     }
                 )
 
-
-                // -------------------------------
                 // MÁS
-                // -------------------------------
-
                 NavigationBarItem(
                     selected = seccionSeleccionada == 3,
-
                     onClick = {
                         seccionSeleccionada = 3
                     },
-
                     icon = {
                         Icon(
                             imageVector = Icons.Default.MoreHoriz,
                             contentDescription = "Más"
                         )
                     },
-
                     label = {
                         Text("Más")
                     }
@@ -486,49 +402,26 @@ fun BancoPrincipalScreen(
         }
     ) { paddingValues ->
 
-
-        // ====================================================
-        // CONTENIDO DINÁMICO
-        // ====================================================
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
 
-            // Barra superior
             BarraSuperior(
                 nombre = nombre,
                 onCerrarSesion = onCerrarSesion
             )
 
-
-            // ------------------------------------------------
-            // WHEN PARA CAMBIAR EL CONTENIDO
-            // ------------------------------------------------
-
             when (seccionSeleccionada) {
 
-                // 0 = INICIO
-                0 -> {
-                    InicioScreen(nombre)
-                }
+                0 -> InicioScreen(nombre)
 
-                // 1 = CUENTAS
-                1 -> {
-                    CuentasScreen()
-                }
+                1 -> CuentasScreen()
 
-                // 2 = CRÉDITOS
-                2 -> {
-                    CreditosScreen()
-                }
+                2 -> CreditosScreen()
 
-                // 3 = MÁS
-                3 -> {
-                    MasScreen()
-                }
+                3 -> MasScreen()
             }
         }
     }
@@ -553,9 +446,7 @@ fun BarraSuperior(
                 horizontal = 16.dp,
                 vertical = 12.dp
             ),
-
         horizontalArrangement = Arrangement.SpaceBetween,
-
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -563,7 +454,6 @@ fun BarraSuperior(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // Icono de perfil
             Box {
 
                 Icon(
@@ -573,7 +463,6 @@ fun BarraSuperior(
                     modifier = Modifier.size(34.dp)
                 )
 
-                // Indicador
                 Box(
                     modifier = Modifier
                         .size(10.dp)
@@ -601,7 +490,6 @@ fun BarraSuperior(
                 )
             }
         }
-
 
         TextButton(
             onClick = {
@@ -641,11 +529,6 @@ fun InicioScreen(
 
         Spacer(modifier = Modifier.height(18.dp))
 
-
-        // -----------------------------------------------
-        // CUENTA DE AHORROS
-        // -----------------------------------------------
-
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -669,13 +552,7 @@ fun InicioScreen(
             }
         }
 
-
         Spacer(modifier = Modifier.height(14.dp))
-
-
-        // -----------------------------------------------
-        // CRÉDITO VIGENTE
-        // -----------------------------------------------
 
         Card(
             modifier = Modifier.fillMaxWidth()
@@ -721,8 +598,6 @@ fun CuentasScreen() {
         modifier = Modifier.fillMaxSize()
     ) {
 
-        // Saldo destacado
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -746,9 +621,6 @@ fun CuentasScreen() {
             )
         }
 
-
-        // Lista de movimientos
-
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -766,7 +638,7 @@ fun CuentasScreen() {
 
 
 // ============================================================
-// ITEM DE MOVIMIENTO
+// MOVIMIENTO
 // ============================================================
 
 @Composable
@@ -784,9 +656,7 @@ fun MovimientoItem(
                 horizontal = 16.dp,
                 vertical = 15.dp
             ),
-
         horizontalArrangement = Arrangement.SpaceBetween,
-
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -800,9 +670,7 @@ fun MovimientoItem(
                 } else {
                     Icons.Default.ArrowUpward
                 },
-
                 contentDescription = descripcion,
-
                 tint = if (esIngreso) {
                     Color(0xFF2E7D32)
                 } else {
@@ -818,14 +686,14 @@ fun MovimientoItem(
             )
         }
 
-
         Text(
             text = monto,
             fontWeight = FontWeight.Bold
         )
     }
 
-    HorizontalDivider()
+    // Compatible con Material 3 antiguo
+    Divider()
 }
 
 
@@ -849,7 +717,6 @@ fun CreditosScreen() {
         )
 
         Spacer(modifier = Modifier.height(18.dp))
-
 
         Card(
             modifier = Modifier.fillMaxWidth()
@@ -889,9 +756,7 @@ fun CreditosScreen() {
             }
         }
 
-
         Spacer(modifier = Modifier.height(15.dp))
-
 
         Button(
             onClick = { },
@@ -925,7 +790,6 @@ fun MasScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
         OpcionMenu("Mi perfil")
 
         OpcionMenu("Configuración")
@@ -949,15 +813,12 @@ fun OpcionMenu(
 ) {
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
 
         Text(
             text = texto,
-            modifier = Modifier.padding(18.dp),
-            fontSize = 16.sp
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

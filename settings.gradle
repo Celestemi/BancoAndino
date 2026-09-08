@@ -17,7 +17,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "BancoAndino"
 
-include ':app'
 include ':02_JetpackCompose:app'
 
 project(':02_JetpackCompose:app').projectDir =
